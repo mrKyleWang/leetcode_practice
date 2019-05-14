@@ -19,7 +19,21 @@ public class DeleteNodeInALinkedList {
 
 	*/
 
-	public void deleteNode(ListNode node) {
+	public static void main(String[] args) {
+		ListNode head = new ListNode(4);
+		ListNode second = new ListNode(5);
+		ListNode third = new ListNode(1);
+		ListNode forth = new ListNode(9);
+		head.next = second;
+		second.next = third;
+		third.next = forth;
+		printList(head);
+		deleteNode(third);
+		System.out.println();
+		printList(head);
+	}
+
+	public static void deleteNode(ListNode node) {
 		ListNode next = node.next;
 		node.val = next.val;
 		if (next.next != null) {
@@ -29,7 +43,14 @@ public class DeleteNodeInALinkedList {
 		}
 	}
 
-	public class ListNode {
+	private static void printList(ListNode node) {
+		while (node != null) {
+			System.out.print(" " + node.val);
+			node = node.next;
+		}
+	}
+
+	static class ListNode {
 		int val;
 		ListNode next;
 
