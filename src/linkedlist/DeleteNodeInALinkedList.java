@@ -27,10 +27,9 @@ public class DeleteNodeInALinkedList {
 		head.next = second;
 		second.next = third;
 		third.next = forth;
-		printList(head);
+		ListNode.printList(head);
 		deleteNode(third);
-		System.out.println();
-		printList(head);
+		ListNode.printList(head);
 	}
 
 	public static void deleteNode(ListNode node) {
@@ -40,13 +39,6 @@ public class DeleteNodeInALinkedList {
 			node.next = next.next;
 		} else {
 			node.next = null;
-		}
-	}
-
-	private static void printList(ListNode node) {
-		while (node != null) {
-			System.out.print(" " + node.val);
-			node = node.next;
 		}
 	}
 
