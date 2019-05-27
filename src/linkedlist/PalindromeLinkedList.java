@@ -1,5 +1,7 @@
 package linkedlist;
 
+import linkedlist.entity.ListNode;
+
 /**
  * 回文链表（234）
  * @author KyleWang

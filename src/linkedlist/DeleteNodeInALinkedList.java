@@ -1,5 +1,7 @@
 package linkedlist;
 
+import linkedlist.entity.ListNode;
+
 /**
  * 删除链表中的节点（237）
  * @author KyleWang

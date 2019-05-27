@@ -1,5 +1,7 @@
 package linkedlist;
 
+import linkedlist.entity.ListNode;
+
 /**
  * 删除链表的倒数第N个节点（19）
  * @author KyleWang

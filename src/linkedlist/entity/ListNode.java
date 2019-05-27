@@ -1,4 +1,4 @@
-package linkedlist;
+package linkedlist.entity;
 
 /**
  * 链表节点对象
@@ -7,10 +7,10 @@ package linkedlist;
  * @date 2019年05月14日
  */
 public class ListNode {
-	int val;
-	ListNode next;
+	public int val;
+	public ListNode next;
 
-	ListNode(int x) {
+	public ListNode(int x) {
 		val = x;
 	}
 
