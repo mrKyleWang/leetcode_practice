@@ -1,7 +1,5 @@
 package dynamic;
 
-import java.util.LinkedList;
-
 /**
  * 70. 爬楼梯
  * @author KyleWang
@@ -30,7 +28,7 @@ public class ClimbStairs {
 	*/
 
 	public static void main(String[] args) {
-		long end = System.currentTimeMillis();
+		System.out.println(climbStairs(3));
 	}
 
 	public static int climbStairs(int n) {
