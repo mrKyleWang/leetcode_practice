@@ -18,21 +18,17 @@ public class SwapPairs {
     public static ListNode swapPairs(ListNode head) {
         ListNode cur = head;
         ListNode pre = null;
-        while (cur != null) {
-            if (cur.next != null) {
-                ListNode next = cur.next.next;
-                cur.next.next = cur;
-                if (pre != null) {
-                    pre.next = cur.next;
-                } else {
-                    head = cur.next;
-                }
-                cur.next = next;
-                pre = cur;
-                cur = next;
+        while (cur != null && cur.next != null) {
+            ListNode next = cur.next.next;
+            cur.next.next = cur;
+            if (pre != null) {
+                pre.next = cur.next;
             } else {
-                break;
+                head = cur.next;
             }
+            cur.next = next;
+            pre = cur;
+            cur = next;
         }
         return head;
     }
