@@ -22,6 +22,9 @@ public class ValidAnagram {
 		System.out.println(isAnagram("anagram", "nagaram"));
 	}
 
+	/**
+	 * 使用map保存每个字符及其出现的次数，然后对比次数是否一致
+	 */
 	public static boolean isAnagram(String s, String t) {
 		HashMap<Character, Integer> map = new HashMap<>();
 		for (char sChar : s.toCharArray()) {
