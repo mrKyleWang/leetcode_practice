@@ -39,41 +39,75 @@ public class ValidateBinarySearchTree {
 		 根节点的值为 5 ，但是其右子节点值为 4 。
 	 */
 
-	public static void main(String[] args) {
-		TreeNode head = new TreeNode(10);
-		TreeNode left = new TreeNode(5);
-		TreeNode right = new TreeNode(15);
-		right.left = new TreeNode(11);
-		right.right = new TreeNode(20);
-		head.left = left;
-		head.right = right;
-		System.out.println(isValidBST(head));
-	}
+    public static void main(String[] args) {
+        TreeNode head = new TreeNode(10);
+        TreeNode left = new TreeNode(5);
+        TreeNode right = new TreeNode(15);
+        right.left = new TreeNode(11);
+        right.right = new TreeNode(20);
+        head.left = left;
+        head.right = right;
+        System.out.println(isValidBST(head));
+        System.out.println(isValidBST2(head));
+    }
 
-	public static boolean isValidBST(TreeNode root) {
-		// 先中序遍历，然后判断是否升序
-		List<Integer> list = new ArrayList<>();
-		if (root != null) {
-			addToList(root, list);
-		}
-		for (int i = 0; i < list.size(); i++) {
-			if (i > 0 && list.get(i) <= list.get(i - 1)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * 解法1：先中序遍历，然后判断是否升序
+     */
+    public static boolean isValidBST(TreeNode root) {
+        // 先中序遍历，然后判断是否升序
+        List<Integer> list = new ArrayList<>();
+        if (root != null) {
+            addToList(root, list);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0 && list.get(i) <= list.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * 中序遍历
-	 * @param node
-	 * @param list
-	 */
-	private static void addToList(TreeNode node, List<Integer> list) {
-		if (node != null) {
-			addToList(node.left, list);
-			list.add(node.val);
-			addToList(node.right, list);
-		}
-	}
+    /**
+     * 中序遍历
+     */
+    private static void addToList(TreeNode node, List<Integer> list) {
+        if (node != null) {
+            addToList(node.left, list);
+            list.add(node.val);
+            addToList(node.right, list);
+        }
+    }
+
+    /**
+     * 解法2：递归判断左右子树大小
+     */
+    public static boolean isValidBST2(TreeNode root) {
+        return checkChildren(root) != null;
+    }
+
+    private static int[] checkChildren(TreeNode node) {
+        int currentMin = node.val;
+        int currentMax = node.val;
+        if (node.left != null) {
+            int[] checkResult = checkChildren(node.left);
+            if (checkResult == null || (checkResult[0] > node.val)) {
+                return null;
+            } else {
+                currentMin = checkResult[0];
+            }
+        }
+        if (node.right != null) {
+            int[] checkResult = checkChildren(node.right);
+            if (checkResult == null || (checkResult[0] < node.val)) {
+                return null;
+            } else {
+                currentMax = checkResult[1];
+            }
+        }
+        int[] currentResult = new int[2];
+        currentResult[0] = currentMin;
+        currentResult[1] = currentMax;
+        return currentResult;
+    }
 }
