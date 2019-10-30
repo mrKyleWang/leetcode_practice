@@ -1,4 +1,4 @@
-package array;
+package other;
 
 /**
  * 有效的数独（36）

@@ -51,9 +51,9 @@ public class NQueens {
     public static List<List<String>> solveNQueens(int n) {
         List<List<String>> result = new ArrayList<>();
         // 从第0层开始，
-        int parallel = 0;
+        int row = 0;
         for (int i = 0; i < n; i++) {
-            addResult(n, parallel, i, new HashSet<>(), new HashSet<>(), new HashSet<>(), new ArrayList<>(), result);
+            addResult(n, row, i, new HashSet<>(), new HashSet<>(), new HashSet<>(), new ArrayList<>(), result);
         }
         return result;
     }
@@ -61,53 +61,53 @@ public class NQueens {
     /**
      * 向下递归
      * @param n                  总长度
-     * @param parallel           横向位置
-     * @param vertical           竖向位置
-     * @param verticalFilter     竖向过滤
+     * @param row                行
+     * @param col                列
+     * @param colFilter          竖向过滤
      * @param leftObliqueFilter  左斜过滤
      * @param rightObliqueFilter 右斜过滤
      * @param result             结果集
      */
-    private static void addResult(int n, int parallel, int vertical, Set<Integer> verticalFilter, Set<Integer> leftObliqueFilter, Set<Integer> rightObliqueFilter, List<String> tempResult, List<List<String>> result) {
+    private static void addResult(int n, int row, int col, Set<Integer> colFilter, Set<Integer> leftObliqueFilter, Set<Integer> rightObliqueFilter, List<String> tempResult, List<List<String>> result) {
         // 纵轴过滤
-        if (verticalFilter.contains(vertical)) {
+        if (colFilter.contains(col)) {
             return;
         }
         // 左斜过滤
-        if (leftObliqueFilter.contains(parallel + vertical)) {
+        if (leftObliqueFilter.contains(row + col)) {
             return;
         }
         // 右斜过滤
-        if (rightObliqueFilter.contains(parallel - vertical)) {
+        if (rightObliqueFilter.contains(row - col)) {
             return;
         }
 
         // 生成此行
-        tempResult.add(getString(n, vertical));
+        tempResult.add(getString(n, col));
 
         // 最后一行，添加至结果集
-        if (parallel >= n - 1) {
+        if (row >= n - 1) {
             result.add(tempResult);
             return;
         }
 
         // 递归至下一层
         for (int i = 0; i < n; i++) {
-            Set<Integer> newVerticalFilter = new HashSet<>(verticalFilter);
-            newVerticalFilter.add(vertical);
+            Set<Integer> newColFilter = new HashSet<>(colFilter);
+            newColFilter.add(col);
             Set<Integer> newLeftObliqueFilter = new HashSet<>(leftObliqueFilter);
-            newLeftObliqueFilter.add(parallel + vertical);
+            newLeftObliqueFilter.add(row + col);
             Set<Integer> newRightObliqueFilter = new HashSet<>(rightObliqueFilter);
-            newRightObliqueFilter.add(parallel - vertical);
+            newRightObliqueFilter.add(row - col);
             List<String> newTempResult = new ArrayList<>(tempResult);
-            addResult(n, parallel + 1, i, newVerticalFilter, newLeftObliqueFilter, newRightObliqueFilter, newTempResult, result);
+            addResult(n, row + 1, i, newColFilter, newLeftObliqueFilter, newRightObliqueFilter, newTempResult, result);
         }
     }
 
-    private static String getString(int n, int vertical) {
+    private static String getString(int n, int row) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            if (i == vertical) {
+            if (i == row) {
                 sb.append("Q");
             } else {
                 sb.append(".");
