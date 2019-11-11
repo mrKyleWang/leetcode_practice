@@ -1,4 +1,4 @@
-package other;
+package math;
 
 /**
  * 191. 位1的个数
