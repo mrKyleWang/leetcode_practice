@@ -1,7 +1,7 @@
-package array;
+package dynamic;
 
 /**
- * 买卖股票的最佳时机 II（122）
+ * 122. 买卖股票的最佳时机 II
  * @author KyleWang
  * @version 1.0
  * @date 2019年04月15日
@@ -17,8 +17,9 @@ public class BestTimeToBuyAndSellStockII {
      */
 
     public static void main(String[] args) {
-        int[] nums = {7,1,5,3,6,4};
+        int[] nums = {7, 1, 5, 3, 6, 4};
         System.out.println(maxProfit(nums));
+        System.out.println(maxProfit2(nums));
     }
 
     public static int maxProfit(int[] prices) {
@@ -38,5 +39,28 @@ public class BestTimeToBuyAndSellStockII {
             }
         }
         return profit;
+    }
+
+    /**
+     * 解法2：动态规划
+     * @param prices
+     * @return
+     */
+    public static int maxProfit2(int[] prices) {
+        if (prices != null && prices.length > 1) {
+            // 保存某日在不同持有股票状态下的最大利润
+            int[][] maxProfit = new int[prices.length][2];
+            maxProfit[0][0] = 0;
+            maxProfit[0][1] = -prices[0];
+            for (int i = 1; i < prices.length; i++) {
+                int cur = prices[i];
+                // 0=本日未持有股票：a.i-1未持有，i无操作；a.i-1持有，i卖出
+                // 1=本日持有股票：a.i-1未持有，i买入；a.i-1持有，i无操作
+                maxProfit[i][0] = Math.max(maxProfit[i - 1][0], maxProfit[i - 1][1] + cur);
+                maxProfit[i][1] = Math.max(maxProfit[i - 1][0] - cur, maxProfit[i - 1][1]);
+            }
+            return maxProfit[prices.length - 1][0];
+        }
+        return 0;
     }
 }
