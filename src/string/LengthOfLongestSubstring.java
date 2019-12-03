@@ -30,7 +30,7 @@ public class LengthOfLongestSubstring {
      */
 
     public static void main(String[] args) {
-        System.out.println(new LengthOfLongestSubstring().lengthOfLongestSubstring("pwwkew"));
+        System.out.println(new LengthOfLongestSubstring().lengthOfLongestSubstring("bbbb"));
     }
 
     public int lengthOfLongestSubstring(String s) {
@@ -39,18 +39,11 @@ public class LengthOfLongestSubstring {
             Set<Character> set = new HashSet<>();
             int count = 1;
             set.add(s.charAt(i));
-            for (int j = i - 1; j >= 0; j--) {
+            for (int j = i + 1; j < s.length(); j++) {
                 if (set.contains(s.charAt(j))) {
                     break;
                 }
                 set.add(s.charAt(j));
-                count++;
-            }
-            for (int k = i + 1; k < s.length(); k++) {
-                if (set.contains(s.charAt(k))) {
-                    break;
-                }
-                set.add(s.charAt(k));
                 count++;
             }
             if (count > max) {
