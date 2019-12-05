@@ -87,7 +87,6 @@ public class PermutationInString {
                 differMap.put(c, (differMap.containsKey(c) ? differMap.get(c) - 1 : -1));
             }
             // 移动窗口
-            int windowSize = 0;
             for (int i = 0; i < n; i++) {
                 char in = s2.charAt(i);
                 Integer inCount = differMap.get(in);
@@ -96,7 +95,6 @@ public class PermutationInString {
                 } else {
                     differMap.put(in, inCount == null ? 1 : inCount + 1);
                 }
-                windowSize++;
                 if (i >= m) {
                     char out = s2.charAt(i - m);
                     Integer outCount = differMap.get(out);
@@ -105,9 +103,8 @@ public class PermutationInString {
                     } else {
                         differMap.put(out, outCount == null ? -1 : outCount - 1);
                     }
-                    windowSize--;
                 }
-                if (windowSize == m && differMap.size() == 0) {
+                if (i >= m - 1 && differMap.size() == 0) {
                     return true;
                 }
             }
