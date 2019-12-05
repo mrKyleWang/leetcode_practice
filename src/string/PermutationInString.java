@@ -33,11 +33,13 @@ public class PermutationInString {
     public static void main(String[] args) {
         System.out.println(new PermutationInString().checkInclusion("ab", "eidbaooo"));
         System.out.println(new PermutationInString().checkInclusion("ab", "eidboaoo"));
+        System.out.println(new PermutationInString().checkInclusion2("a", "ab"));
+        System.out.println(new PermutationInString().checkInclusion2("abc", "bbbca"));
     }
 
 
     /**
-     * 用map保存char的数量，通过嵌套遍历
+     * 用map保存char的数量，通过嵌套遍历来判断字符数是否相等
      * @param s1
      * @param s2
      * @return
@@ -62,6 +64,50 @@ public class PermutationInString {
                     }
                 }
                 if (count == s1.length()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 滑动窗口法，使用一个s1长度的窗口，去扫描s2，每次移动一个位置就将进入的和退出的进行计数，全部计数一致则返回true
+     * @return
+     */
+    public boolean checkInclusion2(String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+        if (m <= n) {
+            // map只保存差异，正数表示窗口比s1多的，负数表示缺少的
+            Map<Character, Integer> map = new HashMap<>();
+            Map<Character, Integer> differMap = new HashMap<>();
+            for (char c : s1.toCharArray()) {
+                map.put(c, (map.containsKey(c) ? map.get(c) + 1 : 1));
+                differMap.put(c, (differMap.containsKey(c) ? differMap.get(c) - 1 : -1));
+            }
+            // 移动窗口
+            int windowSize = 0;
+            for (int i = 0; i < n; i++) {
+                char in = s2.charAt(i);
+                Integer inCount = differMap.get(in);
+                if (inCount != null && inCount == -1) {
+                    differMap.remove(in);
+                } else {
+                    differMap.put(in, inCount == null ? 1 : inCount + 1);
+                }
+                windowSize++;
+                if (i >= m) {
+                    char out = s2.charAt(i - m);
+                    Integer outCount = differMap.get(out);
+                    if (outCount != null && outCount == 1) {
+                        differMap.remove(out);
+                    } else {
+                        differMap.put(out, outCount == null ? -1 : outCount - 1);
+                    }
+                    windowSize--;
+                }
+                if (windowSize == m && differMap.size() == 0) {
                     return true;
                 }
             }
