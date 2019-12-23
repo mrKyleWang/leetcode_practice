@@ -35,15 +35,12 @@ public class DailyTemperatures {
     public int[] dailyTemperatures(int[] T) {
         int[] result = new int[T.length];
         for (int i = T.length - 1; i > 0; i--) {
-            System.out.println(i);
             int cur = T[i];
             int pre = T[i - 1];
             int key = i;
-            if (result[key] != 0) {
-                while (cur <= pre && result[key] != 0) {
-                    key = key + result[key];
-                    cur = T[key];
-                }
+            while (cur <= pre && result[key] != 0) {
+                key = key + result[key];
+                cur = T[key];
             }
             if (pre < cur) {
                 result[i - 1] = key - (i - 1);
