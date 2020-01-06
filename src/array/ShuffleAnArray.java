@@ -1,4 +1,4 @@
-package design;
+package array;
 
 import java.util.*;
 
