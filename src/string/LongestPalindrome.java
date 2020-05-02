@@ -37,12 +37,10 @@ public class LongestPalindrome {
         String maxStr = null;
         char[] chars = s.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            for (int j = 0; j < i; j++) {
+            for (int j = 0; i - j + 1 > max; j++) {
                 if (isPalindrome(chars, j, i)) {
-                    if (i - j + 1 > max) {
-                        max = i - j + 1;
-                        maxStr = s.substring(j, i + 1);
-                    }
+                    max = i - j + 1;
+                    maxStr = s.substring(j, i + 1);
                     break;
                 }
             }
