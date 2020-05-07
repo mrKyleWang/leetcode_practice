@@ -3,7 +3,7 @@ package array;
 import java.util.Arrays;
 
 /**
- * 删除排序数组中的重复项（26）
+ * 26. 删除排序数组中的重复项
  * @author KyleWang
  * @version 1.0
  * @date 2019年04月15日
@@ -22,23 +22,20 @@ public class RemoveDuplicatesFromSortedArray {
 	}
 
 	public static int removeDuplicates(int[] nums) {
-		int count = nums.length;
-		int index = 0;
-		for (int i = 0; i < nums.length; i++) {
-			int current = nums[i];
-			boolean repoeat = false;
-			for (int j = 0; j < i; j++) {
-				if (nums[j] == nums[i]) {
-					count--;
-					repoeat = true;
-					break;
+		int count = 0;
+		if (nums.length > 0) {
+			int pre = nums[0];
+			for (int i = 1; i < nums.length; i++) {
+				if (count > 0) {
+					nums[i - count] = nums[i];
+				}
+				if (nums[i] == pre) {
+					count++;
+				} else {
+					pre = nums[i];
 				}
 			}
-			if (!repoeat) {
-				nums[index] = current;
-				index++;
-			}
 		}
-		return count;
+		return nums.length - count;
 	}
 }
