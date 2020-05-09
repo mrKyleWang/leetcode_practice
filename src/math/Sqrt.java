@@ -24,9 +24,12 @@ public class Sqrt {
     */
 
     public static void main(String[] args) {
-        int[] arr = {2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 17, 22, 24, 25, 26, 29, 30, 34, 35, 36, 37};
+        int[] arr = {2147395599};
         for (int i : arr) {
             System.out.println(i + ":" + mySqrt(i));
+        }
+        for (int i : arr) {
+            System.out.println(i + ":" + mySqrt2(i));
         }
     }
 
@@ -52,6 +55,30 @@ public class Sqrt {
             if (y > x && (y - x) < 0.1) {
                 return (int) mid;
             }
+        }
+    }
+
+    private static int mySqrt2(int x) {
+        if (x < 2) {
+            return x;
+        }
+        long left = 0;
+        long right = x;
+        long mid = (left + right) / 2;
+        while (true) {
+            if (x == mid * mid) {
+                return (int) mid;
+            }
+            if (x > mid * mid) {
+                if ((mid + 1) * (mid + 1) > x) {
+                    return (int) mid;
+                }
+                left = mid;
+            } else {
+
+                right = mid;
+            }
+            mid = (left + right) / 2;
         }
     }
 }
