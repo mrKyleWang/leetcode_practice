@@ -68,6 +68,9 @@ public class DesineLRUCache {
     }
 
 
+    /**
+     * 使用LinkedHashMap，存储插入顺序，当capacity满了时，删除head，get/put时，会将已有数据移除，然后重新push 到tail
+     */
     static class LRUCache {
 
         int capacity;
