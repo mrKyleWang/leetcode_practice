@@ -132,18 +132,13 @@ public class SerializeAndDeserializeBinaryTree {
             TreeNode root = new TreeNode(Integer.parseInt(split[0]));
             pre.add(root);
             long index = 0;
-            long size = 2;
-            long sizeMultiple = 1;
+            int preSize = 1;
             for (int i = 1; i < split.length; i++) {
-                if (pre.isEmpty() || (index >= size && index / size / sizeMultiple == 1)) {
+                if (pre.isEmpty() || index / 2 >= preSize) {
                     index = 0;
                     pre = cur;
+                    preSize = pre.size();
                     cur = new LinkedList<>();
-                    if (sizeMultiple > 1 || size * 2 <= 0) {
-                        sizeMultiple *= 2;
-                    } else {
-                        size *= 2;
-                    }
                 }
                 TreeNode node = null;
                 if (!"null".equals(split[i])) {
