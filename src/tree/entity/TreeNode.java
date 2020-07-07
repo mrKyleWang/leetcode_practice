@@ -1,6 +1,7 @@
 package tree.entity;
 
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class TreeNode {
     public int val;
@@ -58,4 +59,40 @@ public class TreeNode {
         builder.delete(builder.length() - 1, builder.length());
         return builder.toString();
     }
+
+    public static TreeNode deserialize(String data) {
+        if (data == null) {
+            return null;
+        }
+        String[] split = data.split(",");
+        Queue<TreeNode> pre = new LinkedList<>();
+        Queue<TreeNode> cur = new LinkedList<>();
+        TreeNode root = new TreeNode(Integer.parseInt(split[0]));
+        pre.add(root);
+        long index = 0;
+        int preSize = 1;
+        for (int i = 1; i < split.length; i++) {
+            if (pre.isEmpty() || index / 2 >= preSize) {
+                index = 0;
+                pre = cur;
+                preSize = pre.size();
+                cur = new LinkedList<>();
+            }
+            TreeNode node = null;
+            if (!"null".equals(split[i])) {
+                node = new TreeNode(Integer.parseInt(split[i]));
+                cur.add(node);
+            }
+            TreeNode parent = pre.peek();
+            if (index % 2 == 0) {
+                parent.left = node;
+            } else {
+                parent.right = node;
+                pre.poll();
+            }
+            index++;
+        }
+        return root;
+    }
+
 }
