@@ -12,6 +12,12 @@ public class TreeNode {
         val = x;
     }
 
+    public TreeNode(int i, TreeNode leftNode, TreeNode rightNode) {
+        val = i;
+        left = leftNode;
+        right = rightNode;
+    }
+
     /**
      * 层次遍历输出
      */
