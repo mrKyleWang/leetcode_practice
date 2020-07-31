@@ -41,10 +41,12 @@ public class MagicIndexLCCI {
     }
 
     public int findMagicIndex(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < nums.length; ) {
             if (i == nums[i]) {
                 return i;
             }
+            // 跳跃
+            i = Math.max(i + 1, nums[i]);
         }
         return -1;
     }
