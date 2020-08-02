@@ -58,6 +58,7 @@ public class SmallestRangeCoveringElementsFromKLists {
 
     /**
      * 双指针+滑动窗口
+     * 参考76. 最小覆盖子串，需要满足窗口内每个数组出现的次数>0
      */
     public int[] smallestRange(List<List<Integer>> nums) {
         // 构建Map：<num,[所属数组index]>
