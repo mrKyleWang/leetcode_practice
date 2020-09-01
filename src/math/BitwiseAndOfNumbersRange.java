@@ -40,6 +40,9 @@ public class BitwiseAndOfNumbersRange {
     }
 
 
+    /**
+     * 找到m与n的二进制最长公共前缀
+     */
     public int rangeBitwiseAnd(int m, int n) {
         int offset = 0;
         for (; m != n; ++offset) {
