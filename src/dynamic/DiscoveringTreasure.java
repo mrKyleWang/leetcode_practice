@@ -38,6 +38,15 @@ public class DiscoveringTreasure {
 
      */
 
+    /**
+     * 思路：
+     * 整个过程是：S -> (O -> M -> O -> M ... -> M) -> T
+     * <p>
+     * 需要确定：S到每个O的最短距离，T到每个M的距离，以及每个O到每个M的最短距离，可以总结为：S到每个O的距离，M到所有点的距离
+     * <p>
+     * 先遍历，找到起点、终点、每个石头、每个机关的位置
+     */
+
     @Test
     public void test() {
         String[] maze = {"S#O", "M.#", "M.T"};
@@ -50,180 +59,172 @@ public class DiscoveringTreasure {
         Assert.assertEquals(17, minimalSteps(maze));
     }
 
-    int m, n;
+    /*
+        大概思路：具体的还请看代码里面的注释
+        把点分为两种，一个列表放石头的，一个列表放机关的
+        然后求出每个机关到每个石头的距离
+        然后在求得每个机关到每个机关的距离
+        然后就是逆天的游戏理解
+        把一个数的二进制表示当前机关触发的状态
+        这个数的二进制第i位如果为0就表示第i个机关还没有被触发，反之为1就表示被触发了
+        然后再找出机关触发状态下，最短的距离
+    */
+
 
     public int minimalSteps(String[] maze) {
-        m = maze.length;
-        n = maze[0].length();
-        // 机关 & 石头
-        List<int[]> buttons = new ArrayList<>();
+        int n = maze.length;
+        char[][] mat = new char[n][];
+        for (int i = 0; i < n; i++) {
+            mat[i] = maze[i].toCharArray();
+        }
+
+        int m = mat[0].length;
+        List<int[]> triggers = new ArrayList<>();
         List<int[]> stones = new ArrayList<>();
-        // 起点 & 终点
-        int sx = -1, sy = -1, tx = -1, ty = -1;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (maze[i].charAt(j) == 'M') {
-                    buttons.add(new int[]{i, j});
+        int[] start = null;
+        int[] end = null;
+        // 把各个类型的点分开
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (mat[i][j] == 'M') {
+                    triggers.add(new int[]{i, j});
                 }
-                if (maze[i].charAt(j) == 'O') {
+                if (mat[i][j] == 'O') {
                     stones.add(new int[]{i, j});
                 }
-                if (maze[i].charAt(j) == 'S') {
-                    sx = i;
-                    sy = j;
+                if (mat[i][j] == 'S') {
+                    start = new int[]{i, j};
                 }
-                if (maze[i].charAt(j) == 'T') {
-                    tx = i;
-                    ty = j;
+                if (mat[i][j] == 'T') {
+                    end = new int[]{i, j};
                 }
             }
         }
-        int nb = buttons.size();
-        int ns = stones.size();
-        // 记录起点到其他点的距离
-        int[][] startDist = bfs(sx, sy, maze);
+        // 把初始点加入机关队列，把终点加入石头队列
+        triggers.add(start);
+        stones.add(end);
+        int T = triggers.size();
+        int S = stones.size();
 
-        // 边界情况：没有机关
-        if (nb == 0) {
-            return startDist[tx][ty];
-        }
-        //从某个机关到其他机关、起点、终点的最短距离
-        // dist[][0- nb-1] 机关经过石头到其他机关的最短距离
-        // dist[][nb] 起点经过石头到机关的最短距离
-        // dist[][nb+1] 机关到终点的最短距离
-        int[][] dist = new int[nb][nb + 2];
-        for (int i = 0; i < nb; i++) {
-            Arrays.fill(dist[i], -1);
-        }
-        // 记录每个机关点 到 其他点的距离
-        int[][][] dd = new int[nb][][];
-        for (int i = 0; i < nb; i++) {
-            int[][] d = bfs(buttons.get(i)[0], buttons.get(i)[1], maze);
-            dd[i] = d;
-            //当前机关到终点的最短距离
-            dist[i][nb + 1] = d[tx][ty];
-        }
-
-        for (int i = 0; i < nb; i++) {
-            //记录从 起点 到 拿石头 再到 当前机关 的最短距离
-            int tmp = -1;
-            for (int k = 0; k < ns; k++) {
-                //当前石头的坐标
-                int midX = stones.get(k)[0], midY = stones.get(k)[1];
-                //当前机关能到这个石头 并且 起点能到这个石头
-                if (dd[i][midX][midY] != -1 && startDist[midX][midY] != -1) {
-                    if (tmp == -1 || tmp > dd[i][midX][midY] + startDist[midX][midY]) {
-                        tmp = dd[i][midX][midY] + startDist[midX][midY];
+        // 保存 机关-石头 的最短距离
+        int[][] dist = new int[T][S];
+        // 方向
+        int[][] dirs = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        // BFS（如果这里不懂得话，不建议先看这道题，先看一下BFS类型得题）
+        int inf = (int) 1e8;
+        Deque<int[]> dq = new ArrayDeque<>(n * m);
+        // 记录已访问过的点（未访问为-1）
+        int[][] access = new int[n][m];
+        // 遍历机关，从每个机关出发，算出其到每个点的距离
+        for (int i = 0; i < T; i++) {
+            dq.clear();
+            for (int[] a : access) {
+                Arrays.fill(a, -1);
+            }
+            int[] t = triggers.get(i);
+            access[t[0]][t[1]] = 0;
+            dq.addLast(t);
+            while (!dq.isEmpty()) {
+                int[] head = dq.removeFirst();
+                for (int[] dir : dirs) {
+                    int x = head[0] + dir[0];
+                    int y = head[1] + dir[1];
+                    if (x < 0 || x >= n || y < 0 || y >= m || mat[x][y] == '#' || access[x][y] != -1) {
+                        continue;
                     }
+                    access[x][y] = access[head[0]][head[1]] + 1;
+                    dq.addLast(new int[]{x, y});
                 }
             }
-            //从起点 到 石头  到这个机关 的最短距离
-            dist[i][nb] = tmp;
-
-            for (int j = i + 1; j < nb; j++) {
-                //记录 机关i 到 某个石头 再到 机关j 的最短距离
-                int mn = -1;
-                for (int k = 0; k < ns; k++) {
-                    //当前石头的坐标
-                    int midX = stones.get(k)[0], midY = stones.get(k)[1];
-                    // 石头到 机关i 的距离 和 石头到 机关j 的距离
-                    if (dd[i][midX][midY] != -1 && dd[j][midX][midY] != -1) {
-                        if (mn == -1 || mn > dd[i][midX][midY] + dd[j][midX][midY]) {
-                            mn = dd[i][midX][midY] + dd[j][midX][midY];
-                        }
-                    }
+            // dist[i][j]这里就是 第i个机关到第j个机关的最短距离
+            for (int j = 0; j < S; j++) {
+                int[] s = stones.get(j);
+                if (access[s[0]][s[1]] == -1) {
+                    dist[i][j] = inf;
+                } else {
+                    dist[i][j] = access[s[0]][s[1]];
                 }
-                dist[i][j] = mn;
-                dist[j][i] = mn;
             }
         }
-
-        // 无法达成的情形: 某一个机关 不能通过某一个石头 到达 另一个机关
-        for (int i = 0; i < nb; i++) {
-            if (dist[i][nb] == -1 || dist[i][nb + 1] == -1) {
-                return -1;
+        // 循环所有的点，找到从一个机关经过石堆到另一个机关的最短距离
+        int[][] move = new int[T][T];
+        for (int i = 0; i < T; i++) {
+            for (int j = 0; j < T; j++) {
+                if (i == j) {
+                    continue;
+                }
+                move[i][j] = inf;
+                // 石堆的最后一个是终点，所以要-1
+                for (int k = 0; k < S - 1; k++) {
+                    // i到j的最短距离为：i到k石堆+j到k石堆
+                    move[i][j] = Math.min(move[i][j], dist[i][k] + dist[j][k]);
+                }
             }
         }
-
-        //111111  每个1代表一个机关
-        // dp 数组， -1 代表没有遍历到
-        int[][] dp = new int[1 << nb][nb];
-        for (int i = 0; i < 1 << nb; i++) {
-            Arrays.fill(dp[i], -1);
+        // 初始化
+        // mask的二进制中，第j位如果为0，证明第j个机关没有触发，比如有10个机关，求出mask=1023，二进制则为1111111111
+        int mask = (1 << (T - 1)) - 1;
+        int[][] dp = new int[T][mask + 1];
+        for (int i = 0; i < T; i++) {
+            dp[i][0] = inf;
         }
-        for (int i = 0; i < nb; i++) {
-            //从 起点 到 石头 到 该机关 的最短距离
-            dp[1 << i][i] = dist[i][nb];
-        }
-
-        // 由于更新的状态都比未更新的大，所以直接从小到大遍历即可
-        for (int mask = 1; mask < (1 << nb); mask++) {
-            for (int i = 0; i < nb; i++) {
-                // 当前 dp 是合法的,
-                // 比如： mask = 0110  说明当前 选了 第二 第三个机关
-                if ((mask & (1 << i)) != 0) {
-                    for (int j = 0; j < nb; j++) {
-                        // j 不在 mask 里， 找到还没有开启的机关
-                        // mask = 0110 说明就 只能选第一个和 第四个机关
-                        if ((mask & (1 << j)) == 0) {
-                            // j = 0  next = 0110 | 0001 = 0111
-                            int next = mask | (1 << j);
-                            //dist[i][j] 是指 机关i 经过 石头 到机关 j 的最短距离
-                            //dp[mask][i] 表示 mask这个值 状态下最后选择 i 机关的最短距离
-                            //dp[next][j]  表示 next这个值 状态下最后选择 j 机关的最短距离
-                            //dp[mask][j] + dist[i][j] 就等于 从 mask状态 选择从 机关i 经过石头 到机关j 到 next状态下的最短距离
-                            if (dp[next][j] == -1 || dp[next][j] > dp[mask][i] + dist[i][j]) {
-                                dp[next][j] = dp[mask][i] + dist[i][j];
-                            }
-                        }
-                    }
+        // 这里运用二进制，i的第j位如果是0的话，证明第j个机关还没触发，反之，就是第j个机关触发了
+        dp[T - 1][0] = 0;
+        for (int i = 1; i <= mask; i++) {
+            for (int j = 0; j < T; j++) {
+                dp[j][i] = inf;
+                // 这里相当于剪枝操作吧，如果都是i>>j的最后一位不能触发，就直接过吧
+                // 既然有不能触发的机关，求出就没有意义
+                if (bit(i, j) == 0) {
+                    continue;
+                }
+                // 这里异运算，就是找没触发的
+                // 也就是需要改变的状态
+                int remove = i ^ (1 << j);
+                for (int k = 0; k < T; k++) {
+                    // 当前的j个机关最小值，就是k个机关的remove状态，然后加上k到j的路径
+                    dp[j][i] = Math.min(dp[j][i], dp[k][remove] + move[k][j]);
                 }
             }
         }
 
-        int ret = -1;
-        //finalMask = 111111  表示每个机关都打开了
-        int finalMask = (1 << nb) - 1;
-        for (int i = 0; i < nb; i++) {
-            //dp[finalMask][i] + dist[i][nb + 1] 表示 最后一个到的机关是i 然后加上 到 机关i 到 终点的最短距离
-            if (ret == -1 || ret > dp[finalMask][i] + dist[i][nb + 1]) {
-                ret = dp[finalMask][i] + dist[i][nb + 1];
+        int ans = inf;
+        if (T > 1) {
+            for (int i = 0; i < T - 1; i++) {
+                // 找mask就是全都为1，证明全部机关触发
+                // dist是上面求得最短距离，第i个机关到s-1的最短路径（到终点的最短路径）
+                // 因为开始的时候，把初始点加入到了机关队列，把终点加入到了石头队列
+                ans = Math.min(ans, dp[i][mask] + dist[i][S - 1]);
             }
+        } else {
+            ans = dist[0][S - 1];
         }
 
-        return ret;
+        if (ans >= inf) {
+            return -1;
+        }
+        return ans;
     }
 
-    /**
-     * 找到 (x,y)到其他点的最短距离
-     */
-    public int[][] bfs(int x, int y, String[] maze) {
-        //上下左右
-        int[] dx = {1, -1, 0, 0};
-        int[] dy = {0, 0, 1, -1};
-        int[][] ret = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            Arrays.fill(ret[i], -1);
-        }
-        ret[x][y] = 0;
-        Queue<int[]> queue = new LinkedList<int[]>();
-        queue.offer(new int[]{x, y});
-        while (!queue.isEmpty()) {
-            int[] p = queue.poll();
-            int curx = p[0], cury = p[1];
-            for (int k = 0; k < 4; k++) {
-                int nx = curx + dx[k], ny = cury + dy[k];
-                if (inBound(nx, ny) && maze[nx].charAt(ny) != '#' && ret[nx][ny] == -1) {
-                    ret[nx][ny] = ret[curx][cury] + 1;
-                    queue.offer(new int[]{nx, ny});
-                }
-            }
-        }
-        return ret;
+    int bit(int x, int i) {
+        return (x >> i) & 1;
     }
 
-    public boolean inBound(int x, int y) {
-        return x >= 0 && x < m && y >= 0 && y < n;
+    public static void main(String[] args) {
+
+        int T = 3;
+        int mask = (1<<T) -1;
+        System.out.println(Integer.toBinaryString(mask));
+
+        for (int i = 0; i < mask; i++) {
+            System.out.println();
+
+            for (int j = 0; j < T; j++) {
+                int remove = i ^ (1 << j);
+                System.out.println("j="+j+"  remove:"+Integer.toBinaryString(remove));
+            }
+        }
     }
+
 
 }
