@@ -56,6 +56,12 @@ public class RedundantConnectionII {
         System.out.println(Arrays.toString(findRedundantDirectedConnection(edges)));
     }
 
+    @Test
+    public void test3() {
+        int[][] edges = {{1, 2}, {1, 3}, {3, 4}, {4, 5}, {4, 2}};
+        System.out.println(Arrays.toString(findRedundantDirectedConnection(edges)));
+    }
+
     /**
      * 并查集，保存祖先
      */
