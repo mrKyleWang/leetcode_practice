@@ -60,11 +60,11 @@ public class PermutationsII {
         int size = retain.size();
         HashSet<Integer> set = new HashSet<>();
         for (int i = 0; i < size; i++) {
-            List<Integer> newPath = new ArrayList<>(path);
             Integer next = retain.getFirst();
-            newPath.add(next);
             Integer remove = retain.removeFirst();
             if (!set.contains(next)) {
+                List<Integer> newPath = new ArrayList<>(path);
+                newPath.add(next);
                 add(result, newPath, retain, cur - 1);
                 set.add(next);
             }
