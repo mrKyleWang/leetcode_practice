@@ -59,7 +59,6 @@ public class FourSum {
                     int l = j + 1;
                     int r = nums.length - 1;
                     while (l < r) {
-                        System.out.println(nums[i] + "-" + nums[j] + "-" + nums[l] + "-" + nums[r]);
                         int sum = nums[i] + nums[j] + nums[l] + nums[r];
                         if (sum == target) {
                             result.add(Arrays.asList(nums[i], nums[j], nums[l], nums[r]));
