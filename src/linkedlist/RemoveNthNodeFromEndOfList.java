@@ -32,8 +32,8 @@ public class RemoveNthNodeFromEndOfList {
 		second.next = third;
 		third.next = forth;
 		forth.next = fifth;
-		ListNode.printList(head);
-		ListNode.printList(removeNthFromEnd(head, 1));
+		head.printList();
+		removeNthFromEnd(head, 1).printList();
 	}
 
 	public static ListNode removeNthFromEnd(ListNode head, int n) {

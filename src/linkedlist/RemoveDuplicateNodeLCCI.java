@@ -18,7 +18,7 @@ public class RemoveDuplicateNodeLCCI {
         int[] arr = {1, 2, 3, 3, 2, 1};
         ListNode head = new ListNode(arr);
         ListNode node = removeDuplicateNodes(head);
-        ListNode.printList(node);
+        node.printList();
     }
 
     public ListNode removeDuplicateNodes(ListNode head) {

@@ -33,7 +33,7 @@ public class MergeTwoSortedLists {
 		second.next = third;
 		head2.next = second2;
 		second2.next = third2;
-		ListNode.printList(mergeTwoLists(head, head2));
+		mergeTwoLists(head, head2).printList();
 	}
 
 	public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {

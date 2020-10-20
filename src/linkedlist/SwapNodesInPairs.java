@@ -35,7 +35,7 @@ public class SwapNodesInPairs {
     @Test
     public void test() {
         ListNode head = new ListNode(1, 2, 3, 4, 5, 6);
-        ListNode.printList(swapPairs(head));
+        swapPairs(head).printList();
     }
 
     public ListNode swapPairs(ListNode head) {

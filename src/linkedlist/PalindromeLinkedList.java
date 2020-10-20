@@ -30,7 +30,7 @@ public class PalindromeLinkedList {
 		 second.next = third;
 		 third.next = forth;
 		 forth.next = fifth;
-		ListNode.printList(head);
+		head.printList();
 		System.out.println(isPalindrome(head));
 	}
 
@@ -68,8 +68,8 @@ public class PalindromeLinkedList {
 			// 奇数个
 			seq2 = seq1Next.next;
 		}
-		ListNode.printList(seq1);
-		ListNode.printList(seq2);
+		seq1.printList();
+		seq2.printList();
 		do {
 			if (seq1.val != seq2.val) {
 				return false;

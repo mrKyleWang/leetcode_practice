@@ -26,7 +26,7 @@ public class AddTwoNumbers {
     public static void main(String[] args) {
         ListNode head1 = new ListNode(5);
         ListNode head2 = new ListNode(5);
-        ListNode.printList(addTwoNumbers(head1, head2));
+        addTwoNumbers(head1, head2).printList();
     }
 
     /**

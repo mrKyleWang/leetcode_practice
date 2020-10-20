@@ -33,7 +33,8 @@ public class ListNode {
         return val + "";
     }
 
-    public static void printList(ListNode node) {
+    public void printList() {
+        ListNode node = this;
         while (node != null) {
             System.out.print(node.val + " ");
             node = node.next;

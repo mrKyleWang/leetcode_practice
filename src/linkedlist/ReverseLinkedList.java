@@ -20,9 +20,9 @@ public class ReverseLinkedList {
 
     public static void main(String[] args) {
         ListNode head = new ListNode(1, 2, 3, 4, 5);
-        ListNode.printList(head);
+        head.printList();
 //        ListNode.printList(reverseList(head));
-        ListNode.printList(reverseList2(head));
+        reverseList2(head).printList();
     }
 
     /**

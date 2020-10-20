@@ -29,9 +29,9 @@ public class DeleteNodeInALinkedList {
 		head.next = second;
 		second.next = third;
 		third.next = forth;
-		ListNode.printList(head);
+		head.printList();
 		deleteNode(third);
-		ListNode.printList(head);
+		head.printList();
 	}
 
 	public static void deleteNode(ListNode node) {
