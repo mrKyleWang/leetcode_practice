@@ -3,6 +3,8 @@ package array;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.LinkedList;
+
 /**
  * 402. 移掉K位数字
  * @author KyleWang
@@ -55,10 +57,15 @@ public class RemoveKDigits {
     }
 
 
-    public String removeKdigits(String num, int k) {
+    public String removeKdigits2(String num, int k) {
         StringBuilder builder = new StringBuilder(num);
         while (k > 0) {
-            remove(builder);
+            for (int i = 0; i < builder.length(); i++) {
+                if (i == builder.length() - 1 || builder.charAt(i) > builder.charAt(i + 1)) {
+                    builder.deleteCharAt(i);
+                    break;
+                }
+            }
             k--;
         }
         for (int i = 0; i < builder.length(); i++) {
@@ -72,12 +79,30 @@ public class RemoveKDigits {
         return builder.length() > 0 ? builder.toString() : "0";
     }
 
-    private void remove(StringBuilder builder) {
-        for (int i = 0; i < builder.length(); i++) {
-            if (i == builder.length() - 1 || builder.charAt(i) > builder.charAt(i + 1)) {
-                builder.deleteCharAt(i);
-                return;
+    /**
+     * 双端队列构建单调栈
+     */
+    public String removeKdigits(String num, int k) {
+        LinkedList<Character> deque = new LinkedList<>();
+        char[] chars = num.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            while (!deque.isEmpty() && k > 0 && chars[i] < deque.peekLast()) {
+                deque.pollLast();
+                k--;
+            }
+            deque.offerLast(chars[i]);
+        }
+        for (int i = 0; i < k; i++) {
+            deque.pollLast();
+        }
+        StringBuilder builder = new StringBuilder();
+        boolean flag = false;
+        for (Character c : deque) {
+            if (c != '0' || flag) {
+                builder.append(c);
+                flag = true;
             }
         }
+        return builder.length() > 0 ? builder.toString() : "0";
     }
 }
