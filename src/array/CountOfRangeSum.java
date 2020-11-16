@@ -3,6 +3,8 @@ package array;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * 327. 区间和的个数
  * @author KyleWang
@@ -29,7 +31,16 @@ public class CountOfRangeSum {
         int[] nums = {-2, 5, -1};
         int lower = -2;
         int upper = 2;
-        Assert.assertEquals(3, countRangeSum(nums, lower, upper));
+        Assert.assertEquals(3, countRangeSum2(nums, lower, upper));
+    }
+
+
+    @Test
+    public void test2() {
+        int[] nums = {-2147483647,0,-2147483647,2147483647};
+        int lower = -564;
+        int upper = 3864;
+        Assert.assertEquals(3, countRangeSum2(nums, lower, upper));
     }
 
     /**
@@ -54,6 +65,46 @@ public class CountOfRangeSum {
                 }
             }
         }
+        return count;
+    }
+
+    /**
+     * 前缀和+归并排序
+     * 前缀和：sum[i] = 从 0 到 i-1之和
+     */
+    public int countRangeSum2(int[] nums, int lower, int upper) {
+        int n = nums.length;
+        long[] sum = new long[n + 1];
+        long s = 0;
+        for (int i = 0; i < n; i++) {
+            s += nums[i];
+            sum[i + 1] = s;
+        }
+        return merge(sum, lower, upper, 0, n);
+    }
+
+    private int merge(long[] sum, int lower, int upper, int start, int end) {
+        if (start == end) {
+            return 0;
+        }
+        int mid = (start + end) / 2;
+        int n1 = merge(sum, lower, upper, start, mid);
+        int n2 = merge(sum, lower, upper, mid + 1, end);
+        int count = n1 + n2;
+
+        int left = mid + 1;
+        int right = mid + 1;
+        for (int i = start; i <= mid; i++) {
+            while (left <= end && sum[left] - sum[i] < lower) {
+                left++;
+            }
+            while (right <= end && sum[right] - sum[i] <= upper) {
+                right++;
+            }
+            count += right - left;
+        }
+
+        Arrays.sort(sum, start, end + 1);
         return count;
     }
 }
