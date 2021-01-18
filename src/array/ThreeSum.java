@@ -43,26 +43,16 @@ public class ThreeSum {
                 while (j < k) {
                     int twoSum = nums[j] + nums[k];
                     if (nums[i] + twoSum == 0) {
-                        result.add(Arrays.asList(nums[i], nums[j], nums[k]));
-                        while (j < k && nums[j] == nums[j + 1]) {
-                            j++;
-                        }
-                        while (j < k && nums[k] == nums[k - 1]) {
-                            k--;
+                        if (j == i + 1 || nums[j] != nums[j - 1]) {
+                            result.add(Arrays.asList(nums[i], nums[j], nums[k]));
                         }
                         j++;
                         k--;
 
                     } else {
                         if (nums[i] + twoSum < 0) {
-                            while (j < k && nums[j] == nums[j + 1]) {
-                                j++;
-                            }
                             j++;
                         } else {
-                            while (j < k && nums[k] == nums[k - 1]) {
-                                k--;
-                            }
                             k--;
                         }
                     }
