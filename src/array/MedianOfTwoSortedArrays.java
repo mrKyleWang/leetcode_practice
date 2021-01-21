@@ -46,6 +46,11 @@ public class MedianOfTwoSortedArrays {
 
     /**
      * 找第K小的数
+     * 如果在i1~ 和 i2~ 两个范围内找第k大的数，则先各自找出自己的第k/2大的数，
+     * 如果n1<n2，则说明此时的范围内，arr1[i1]~n1这段范围内的数为最小的k/2个数，可直接移除后，即从剩余的范围内查找第k-k/2个数
+     *
+     * 比如：从arr1和arr2中找出第4大的数，此时从arr1找出第2大n1，从arr2中找出第2大n2，
+     * 如果n1<n2，则将0~n1范围排除，因为这是当前范围内最小的2个数，此时最小的2个数排除掉了，那么就在剩余的范围内找到的第4-2=2大的数
      */
     private double findKTh(int[] nums1, int i1, int[] nums2, int i2, int k) {
         if (i1 >= nums1.length) {
