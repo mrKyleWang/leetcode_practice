@@ -74,6 +74,10 @@ public class RemoveMaxNumberOfEdgesToKeepGraphFullyTraversable {
         Assert.assertEquals(114, maxNumEdgesToRemove(13, edges));
     }
 
+    /**
+     * 贪心+并查集
+     * 优先保留第3类边
+     */
     public int maxNumEdgesToRemove(int n, int[][] edges) {
         int count1 = 0;
         int count2 = 0;
