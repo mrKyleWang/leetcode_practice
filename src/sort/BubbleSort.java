@@ -21,15 +21,22 @@ public class BubbleSort {
 
     /**
      * 每次都把最小的往上冒
+     * 使用count优化，如果在一次轮询中没有任何交换，则说明已经排好了，不用进行下一轮
      */
     public void bubbleSort(int[] arr) {
+        int count;
         for (int i = 0; i < arr.length; i++) {
+            count = 0;
             for (int j = arr.length - 1; j > 0; j--) {
                 int cur = arr[j];
                 int pre = arr[j - 1];
                 if (pre > cur) {
+                    count++;
                     swap(arr, j, j - 1);
                 }
+            }
+            if (count == 0) {
+                return;
             }
         }
     }
