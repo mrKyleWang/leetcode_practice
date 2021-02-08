@@ -1,9 +1,9 @@
 package other;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 51. N皇后
@@ -33,7 +33,8 @@ public class NQueens {
     解释: 4 皇后问题存在两个不同的解法。
     */
 
-    public static void main(String[] args) {
+    @Test
+    public void test() {
         List<List<String>> results = solveNQueens(4);
         for (List<String> result : results) {
             for (String s : result) {
@@ -45,74 +46,77 @@ public class NQueens {
 
     /**
      * 递归+剪枝
-     * @param n
-     * @return
      */
-    public static List<List<String>> solveNQueens(int n) {
+    public List<List<String>> solveNQueens(int n) {
         List<List<String>> result = new ArrayList<>();
         // 从第0层开始，
-        int row = 0;
+        boolean[] colFilter = new boolean[n];
+        boolean[] leftFilter = new boolean[n * 2 - 1];
+        boolean[] rightFilter = new boolean[n * 2 - 1];
         for (int i = 0; i < n; i++) {
-            addResult(n, row, i, new HashSet<>(), new HashSet<>(), new HashSet<>(), new ArrayList<>(), result);
+            deep(n, 0, i, colFilter, leftFilter, rightFilter, result, new int[n]);
         }
         return result;
     }
 
     /**
      * 向下递归
-     * @param n                  总长度
-     * @param row                行
-     * @param col                列
-     * @param colFilter          竖向过滤
-     * @param leftObliqueFilter  左斜过滤
-     * @param rightObliqueFilter 右斜过滤
-     * @param result             结果集
+     * @param n           总长度
+     * @param row         行
+     * @param col         列
+     * @param colFilter   竖向过滤
+     * @param leftFilter  左斜过滤
+     * @param rightFilter 右斜过滤
+     * @param result      结果集
      */
-    private static void addResult(int n, int row, int col, Set<Integer> colFilter, Set<Integer> leftObliqueFilter, Set<Integer> rightObliqueFilter, List<String> tempResult, List<List<String>> result) {
+    private void deep(int n, int row, int col, boolean[] colFilter, boolean[] leftFilter, boolean[] rightFilter, List<List<String>> result, int[] queens) {
         // 纵轴过滤
-        if (colFilter.contains(col)) {
+        if (colFilter[col]) {
             return;
         }
         // 左斜过滤
-        if (leftObliqueFilter.contains(row + col)) {
+        if (leftFilter[row + col]) {
             return;
         }
         // 右斜过滤
-        if (rightObliqueFilter.contains(row - col)) {
+        if (rightFilter[row - col + n - 1]) {
             return;
         }
 
         // 生成此行
-        tempResult.add(getString(n, col));
+        queens[row] = col;
 
         // 最后一行，添加至结果集
         if (row >= n - 1) {
-            result.add(tempResult);
+            result.add(getString(queens));
             return;
         }
 
         // 递归至下一层
+        colFilter[col] = true;
+        leftFilter[row + col] = true;
+        rightFilter[row - col + n - 1] = true;
         for (int i = 0; i < n; i++) {
-            Set<Integer> newColFilter = new HashSet<>(colFilter);
-            newColFilter.add(col);
-            Set<Integer> newLeftObliqueFilter = new HashSet<>(leftObliqueFilter);
-            newLeftObliqueFilter.add(row + col);
-            Set<Integer> newRightObliqueFilter = new HashSet<>(rightObliqueFilter);
-            newRightObliqueFilter.add(row - col);
-            List<String> newTempResult = new ArrayList<>(tempResult);
-            addResult(n, row + 1, i, newColFilter, newLeftObliqueFilter, newRightObliqueFilter, newTempResult, result);
+            deep(n, row + 1, i, colFilter, leftFilter, rightFilter, result, queens);
         }
+        colFilter[col] = false;
+        leftFilter[row + col] = false;
+        rightFilter[row - col + n - 1] = false;
     }
 
-    private static String getString(int n, int row) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            if (i == row) {
-                sb.append("Q");
-            } else {
-                sb.append(".");
+    private List<String> getString(int[] queens) {
+        List<String> lines = new ArrayList<>();
+        for (int i : queens) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < queens.length; j++) {
+                if (i == j) {
+                    sb.append("Q");
+                } else {
+                    sb.append(".");
+                }
             }
+            lines.add(sb.toString());
         }
-        return sb.toString();
+        return lines;
     }
 }
