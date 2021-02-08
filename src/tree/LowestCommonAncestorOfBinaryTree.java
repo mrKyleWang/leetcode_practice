@@ -50,30 +50,11 @@ public class LowestCommonAncestorOfBinaryTree {
      * 2：本层只有一个TreeNode时，要么是公共祖先结果，要么是能找到p或q的最高层Node，不管怎么样，都直接将此Node返回
      */
     private TreeNode findCommonAncestor(TreeNode cur, int p, int q) {
-        if (cur == null) {
-            return null;
-        }
-        int count = 0;
-        TreeNode curResult = null;
-        if (cur.val == p || cur.val == q) {
-            count++;
-            curResult = cur;
+        if (cur == null || cur.val == p || cur.val == q) {
+            return cur;
         }
         TreeNode leftResult = findCommonAncestor(cur.left, p, q);
-        if (leftResult != null) {
-            count++;
-            curResult = leftResult;
-        }
         TreeNode rightResult = findCommonAncestor(cur.right, p, q);
-        if (rightResult != null) {
-            count++;
-            curResult = rightResult;
-        }
-
-        if (count == 2) {
-            return cur;
-        } else {
-            return curResult;
-        }
+        return leftResult == null ? rightResult : rightResult == null ? leftResult : cur;
     }
 }

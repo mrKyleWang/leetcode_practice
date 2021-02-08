@@ -2,9 +2,6 @@ package tree;
 
 import tree.entity.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 98. 验证二叉搜索树
  * @author KyleWang
@@ -52,31 +49,29 @@ public class ValidateBinarySearchTree {
     }
 
     /**
-     * 解法1：先中序遍历，然后判断是否升序
+     * 解法1：中序遍历，判断是否升序
      */
     public static boolean isValidBST(TreeNode root) {
-        // 先中序遍历，然后判断是否升序
-        List<Integer> list = new ArrayList<>();
-        if (root != null) {
-            addToList(root, list);
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (i > 0 && list.get(i) <= list.get(i - 1)) {
-                return false;
-            }
-        }
-        return true;
+        return inOrder(root);
     }
+
+    private static long pre = Long.MIN_VALUE;
 
     /**
      * 中序遍历
      */
-    private static void addToList(TreeNode node, List<Integer> list) {
-        if (node != null) {
-            addToList(node.left, list);
-            list.add(node.val);
-            addToList(node.right, list);
+    private static boolean inOrder(TreeNode node) {
+        if (node == null) {
+            return true;
         }
+        if (!inOrder(node.left)){
+            return false;
+        }
+        if (node.val<=pre){
+            return false;
+        }
+        pre = node.val;
+        return (inOrder(node.right));
     }
 
     /**
