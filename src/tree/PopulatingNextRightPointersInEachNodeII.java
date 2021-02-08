@@ -39,7 +39,7 @@ public class PopulatingNextRightPointersInEachNodeII {
     @Test
     public void test() {
         Node root = Node.deserialize("1,2,3,4,5,null,7");
-        Node node = connect2(root);
+        Node node = connect(root);
         System.out.println();
     }
 
@@ -52,25 +52,21 @@ public class PopulatingNextRightPointersInEachNodeII {
         }
         Node pre = null;
         LinkedList<Node> queue = new LinkedList<>();
-        LinkedList<Node> nextQueue = new LinkedList<>();
         queue.offer(root);
         while (queue.size() > 0) {
-            Node node = queue.poll();
-            if (pre != null) {
-                pre.next = node;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Node node = queue.poll();
+                if (node != null) {
+                    if (pre != null) {
+                        pre.next = node;
+                    }
+                    pre = node;
+                    queue.offer(node.left);
+                    queue.offer(node.right);
+                }
             }
-            pre = node;
-            if (node.left != null) {
-                nextQueue.offer(node.left);
-            }
-            if (node.right != null) {
-                nextQueue.offer(node.right);
-            }
-            if (queue.size() == 0 && nextQueue.size() > 0) {
-                pre = null;
-                queue = nextQueue;
-                nextQueue = new LinkedList<>();
-            }
+            pre = null;
         }
         return root;
     }

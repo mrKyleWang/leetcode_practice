@@ -1,5 +1,6 @@
 package tree;
 
+import org.junit.Test;
 import tree.entity.TreeNode;
 
 import java.util.ArrayList;
@@ -34,50 +35,38 @@ public class BinaryTreeLevelOrderTraversal {
 		]
 	 */
 
-	public static void main(String[] args) {
-		TreeNode head = new TreeNode(3);
-		TreeNode left = new TreeNode(9);
-		TreeNode right = new TreeNode(20);
-		right.left = new TreeNode(15);
-		right.right = new TreeNode(7);
-		head.left = left;
-		head.right = right;
-		for (List<Integer> list : levelOrder(head)) {
-			for (Integer val : list) {
-				System.out.print(val);
-				System.out.print(" ");
-			}
-			System.out.println();
-		}
-	}
+    @Test
+    public void test() {
+        TreeNode root = TreeNode.deserialize("3,9,20,null,null,15,7");
+        for (List<Integer> list : levelOrder(root)) {
+            for (Integer val : list) {
+                System.out.print(val);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
 
-	public static List<List<Integer>> levelOrder(TreeNode root) {
-		List<List<Integer>> result = new ArrayList<>();
-		if (root == null) {
-			return result;
-		}
-		List<Integer> list = new ArrayList<>();
-		// 使用两个队列，分别存储当前层和下一层的node
-		LinkedList<TreeNode> queue = new LinkedList<>();
-		LinkedList<TreeNode> nextQueue = new LinkedList<>();
-		queue.offer(root);
-		while (queue.size() > 0) {
-			TreeNode node = queue.poll();
-			list.add(node.val);
-			if (node.left != null) {
-				nextQueue.offer(node.left);
-			}
-			if (node.right != null) {
-				nextQueue.offer(node.right);
-			}
-			if (queue.size() == 0 && nextQueue.size() > 0) {
-				result.add(list);
-				list = new ArrayList<>();
-				queue = nextQueue;
-				nextQueue = new LinkedList<>();
-			}
-		}
-		result.add(list);
-		return result;
-	}
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (queue.size() > 0) {
+            List<Integer> list = new ArrayList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node != null) {
+                    list.add(node.val);
+                    queue.offer(node.left);
+                    queue.offer(node.right);
+                }
+            }
+            result.add(list);
+        }
+        return result;
+    }
 }
