@@ -28,57 +28,26 @@ public class Sqrt {
         for (int i : arr) {
             System.out.println(i + ":" + mySqrt(i));
         }
-        for (int i : arr) {
-            System.out.println(i + ":" + mySqrt2(i));
-        }
     }
 
     private static int mySqrt(int x) {
         if (x <= 1) {
             return x;
         }
-        double left = 0;
-        double right = x;
-        double mid = (left + right) / 2;
-        double y = mid * mid;
-        while (true) {
-            if (x > y) {
-                left = mid;
+        int res = 0;
+        int l = 0;
+        int r = x;
+        while (l <= r) {
+            int m = (l + r) / 2;
+            if (m == x / m) {
+                return m;
+            } else if (m > x / m) {
+                r = m - 1;
             } else {
-                right = mid;
-            }
-            mid = (left + right) / 2;
-            y = mid * mid;
-            if (x > y && (x - y) < 0.1) {
-                return (int) right;
-            }
-            if (y > x && (y - x) < 0.1) {
-                return (int) mid;
+                l = m + 1;
+                res = m;
             }
         }
-    }
-
-    private static int mySqrt2(int x) {
-        if (x < 2) {
-            return x;
-        }
-        long left = 0;
-        long right = x;
-        long mid = (left + right) / 2;
-        while (true) {
-            if (x == mid * mid) {
-                return (int) mid;
-            }
-            if (x > mid * mid) {
-                if ((mid + 1) * (mid + 1) > x) {
-                    return (int) mid;
-                }
-                left = mid;
-            } else {
-
-                right = mid;
-            }
-            mid = (left + right) / 2;
-        }
+        return res;
     }
 }
