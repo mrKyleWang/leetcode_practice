@@ -35,13 +35,19 @@ public class NQueens {
 
     @Test
     public void test() {
-        List<List<String>> results = solveNQueens(4);
+        List<List<String>> results = solveNQueens2(4);
         for (List<String> result : results) {
             for (String s : result) {
                 System.out.println(s);
             }
             System.out.println("---------");
         }
+    }
+
+    @Test
+    public void test2() {
+        System.out.println(Integer.toBinaryString(13));
+        System.out.println(Integer.toBinaryString(1100));
     }
 
     /**
@@ -118,5 +124,43 @@ public class NQueens {
             lines.add(sb.toString());
         }
         return lines;
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * 递归+剪枝（位运算）
+     */
+    public List<List<String>> solveNQueens2(int n) {
+        List<List<String>> result = new ArrayList<>();
+        // 从第0层开始，
+        deep(n, 0, 0, 0, 0, result, new int[n]);
+        return result;
+    }
+
+    /**
+     * 向下递归
+     * @param n      总长度
+     * @param row    行
+     * @param col    列过滤
+     * @param left   左斜过滤
+     * @param right  右斜过滤
+     * @param result 结果集
+     */
+    private void deep(int n, int row, int col, int left, int right, List<List<String>> result, int[] queens) {
+        if (row == n) {
+            result.add(getString(queens));
+            return;
+        }
+        int availablePos = ((1 << n) - 1) & (~(col | left | right));
+        while (availablePos != 0) {
+            // 获取最后一个1的位置
+            int pos = availablePos & -availablePos;
+            // 把最后一个1的位置置为0
+            availablePos &= (availablePos - 1);
+            // 获取此位置的列索引（将pos中的1之后所有的0都变成1，从后往前对1计数）
+            queens[row] = Integer.bitCount(pos - 1);
+            deep(n, row + 1, col | pos, (left | pos) >> 1, (right | pos) << 1, result, queens);
+        }
     }
 }
