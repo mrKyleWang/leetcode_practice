@@ -1,5 +1,8 @@
 package math;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * 191. 位1的个数
  * @author KyleWang
@@ -31,13 +34,21 @@ public class HammingWeight {
     在 Java 中，编译器使用二进制补码记法来表示有符号整数。因此，在上面的 示例 3 中，输入表示有符号整数 -3。
      */
 
-    public static void main(String[] args) {
-        int n  = 0b10000000000000000000000000000000;
-        System.out.println(hammingWeight(n));
-        System.out.println(Integer.toBinaryString(n));
+    @Test
+    public void test() {
+        Assert.assertEquals(1, hammingWeight(0b10000000000000000000000000000000));
+        Assert.assertEquals(31, hammingWeight(0b11111111111111111111111111111101));
     }
 
-    public static int hammingWeight(int n) {
-        return Integer.bitCount(n);
+    /**
+     * n & n-1 实际上就是将n的最后一个1去掉，比如：11000 & 10001 = 10000，直到最后清为0
+     */
+    public int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n &= (n - 1);
+        }
+        return count;
     }
 }
