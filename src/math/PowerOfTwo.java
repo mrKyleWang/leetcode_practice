@@ -35,10 +35,6 @@ public class PowerOfTwo {
      * @return
      */
     public boolean isPowerOfTwo(int n) {
-        int s = n & (n - 1);
-        if (n > 0 && s == 0) {
-            return true;
-        }
-        return false;
+        return n > 0 && (n & n - 1) == 0;
     }
 }
