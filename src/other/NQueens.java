@@ -130,6 +130,8 @@ public class NQueens {
 
     /**
      * 递归+剪枝（位运算）
+     * 使用col、left、right分别保存针对列、左斜、右斜过滤条件下，不可用的位置
+     * 注意方向是从后到前，比如：1000，表示在一行0~3 四个位置中，最后1个位置（3）已经不可用，而前三个位置可用
      */
     public List<List<String>> solveNQueens2(int n) {
         List<List<String>> result = new ArrayList<>();
