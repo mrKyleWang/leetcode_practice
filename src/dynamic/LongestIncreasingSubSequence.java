@@ -1,5 +1,11 @@
 package dynamic;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 300. 最长上升子序列
  * @author KyleWang
@@ -21,12 +27,16 @@ public class LongestIncreasingSubSequence {
             你算法的时间复杂度应该为 O(n2) 。
         进阶: 你能将算法的时间复杂度降低到 O(n log n) 吗?
      */
-
-    public static void main(String[] args) {
+    @Test
+    public void test() {
         int[] nums = {10, 9, 2, 5, 3, 7, 101, 18};
-        System.out.println(new LongestIncreasingSubSequence().lengthOfLIS(nums));
+        Assert.assertEquals(4, lengthOfLIS(nums));
+        Assert.assertEquals(4, lengthOfLIS2(nums));
     }
 
+    /**
+     * 方法1：DP，时间复杂度O(n²)
+     */
     public int lengthOfLIS(int[] nums) {
         // 保存取到每个位置的数时，当前最长序列长度
         if (nums.length > 0) {
@@ -51,5 +61,38 @@ public class LongestIncreasingSubSequence {
             max = nums[i] > max ? nums[i] : max;
         }
         return max;
+    }
+
+    /**
+     * 方法2：贪心+二分查找，时间复杂度O(nlogn)
+     */
+    public int lengthOfLIS2(int[] nums) {
+        // 维护一个递增子序列
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int index = search(list, nums[i]);
+            if (index == list.size()) {
+                list.add(nums[i]);
+            } else {
+                list.set(index, nums[i]);
+            }
+        }
+        return list.size();
+    }
+
+    /**
+     * 二分查找，在list中找到大于num的第一个位置，作为插入位置
+     */
+    private int search(List<Integer> list, int num) {
+        int l = 0, r = list.size();
+        while (l < r) {
+            int mid = (l + r) / 2;
+            if (list.get(mid) < num) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+        }
+        return r;
     }
 }
