@@ -1,7 +1,10 @@
 package string;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 3. 无重复字符的最长子串
@@ -29,26 +32,38 @@ public class LengthOfLongestSubstring {
 
      */
 
-    public static void main(String[] args) {
-        System.out.println(new LengthOfLongestSubstring().lengthOfLongestSubstring("bbbb"));
+    @Test
+    public void test() {
+        Assert.assertEquals(3, lengthOfLongestSubstring("abcabcbb"));
     }
 
+    @Test
+    public void test2() {
+        Assert.assertEquals(3, lengthOfLongestSubstring("pwwkew"));
+    }
+
+    @Test
+    public void test3() {
+        Assert.assertEquals(5, lengthOfLongestSubstring("tmmzuxt"));
+    }
+
+    /**
+     * 使用map保存字符对应的位置（最后出现的位置）
+     * 当l~i不包含重复字符时，计算长度，而如果map中有，则将l右移至重复字符的后一位，此时l左侧的索引都可以作为无效（在containsKey时用于判断）
+     */
     public int lengthOfLongestSubstring(String s) {
-        int max = 0;
-        for (int i = 0; i < s.length(); i++) {
-            Set<Character> set = new HashSet<>();
-            int count = 1;
-            set.add(s.charAt(i));
-            for (int j = i + 1; j < s.length(); j++) {
-                if (set.contains(s.charAt(j))) {
-                    break;
-                }
-                set.add(s.charAt(j));
-                count++;
+        int max = 1;
+        int l = 0;
+        char[] chars = s.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (!map.containsKey(c) || map.get(c) < l) {
+                max = Math.max(max, i - l + 1);
+            } else {
+                l = map.get(c) + 1;
             }
-            if (count > max) {
-                max = count;
-            }
+            map.put(c, i);
         }
         return max;
     }
