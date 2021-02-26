@@ -34,40 +34,18 @@ public class AddTwoNumbers {
      * O(n)
      */
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode head = null;
-        ListNode pre = null;
-        ListNode next = null;
-        while (l1 != null || l2 != null) {
-            int n1 = 0;
-            int n2 = 0;
-            if (l1 != null) {
-                n1 = l1.val;
-                l1 = l1.next;
-            }
-            if (l2 != null) {
-                n2 = l2.val;
-                l2 = l2.next;
-            }
-            int sum = n1 + n2;
-            if (next != null) {
-                sum++;
-            }
-            if (sum >= 10) {
-                next = new ListNode(1);
-                sum -= 10;
-            } else {
-                next = null;
-            }
-            ListNode node = new ListNode(sum);
-            if (head == null) {
-                head = node;
-                pre = node;
-            }
-            pre.next = node;
-            node.next = next;
-            pre = node;
+        ListNode dummy = new ListNode(), cur = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry > 0) {
+            int sum = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
+            carry = sum / 10;
+            sum %= 10;
+            cur.next = new ListNode(sum);
+            cur = cur.next;
+            l1 = l1 == null ? null : l1.next;
+            l2 = l2 == null ? null : l2.next;
         }
-        return head;
+        return dummy.next;
     }
 
 }
