@@ -2,6 +2,7 @@ package other;
 
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -20,18 +21,11 @@ public class DesineLRUCache {
     写入数据 put(key, value) - 如果密钥已经存在，则变更其数据值；如果密钥不存在，则插入该组「密钥/数据值」。
     当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。
 
-     
-
     进阶:
-
     你是否可以在 O(1) 时间复杂度内完成这两种操作？
 
-     
-
     示例:
-
     LRUCache cache = new LRUCache( 2  );       // 缓存容量
-
     cache.put(1, 1);
     cache.put(2, 2);
     cache.get(1);       // 返回  1
@@ -43,21 +37,24 @@ public class DesineLRUCache {
     cache.get(4);       // 返回  4
 
      */
-
     @Test
     public void test() {
-//        LRUCache cache = new LRUCache(2);
-//        cache.put(1, 1);
-//        cache.put(2, 2);
-//        System.out.println(cache.get(1));       // 返回  1
-//        cache.put(3, 3);    // 该操作会使得密钥 2 作废
-//        System.out.println(cache.get(2));       // 返回 -1 (未找到)
-//        cache.put(4, 4);    // 该操作会使得密钥 1 作废
-//        System.out.println(cache.get(1));       // 返回 -1 (未找到)
-//        System.out.println(cache.get(3));       // 返回  3
-//        System.out.println(cache.get(4));
+        LRUCache2 cache = new LRUCache2(2);
+        cache.put(1, 1);
+        cache.put(2, 2);
+        System.out.println(cache.get(1));       // 返回  1
+        cache.put(3, 3);    // 该操作会使得密钥 2 作废
+        System.out.println(cache.get(2));       // 返回 -1 (未找到)
+        cache.put(4, 4);    // 该操作会使得密钥 1 作废
+        System.out.println(cache.get(1));       // 返回 -1 (未找到)
+        System.out.println(cache.get(3));       // 返回  3
+        System.out.println(cache.get(4));
 
-        LRUCache cache = new LRUCache(2);
+    }
+
+    @Test
+    public void test2() {
+        LRUCache2 cache = new LRUCache2(2);
         System.out.println(cache.get(2));
         cache.put(2, 6);
         System.out.println(cache.get(1));
@@ -100,7 +97,84 @@ public class DesineLRUCache {
             }
             map.put(key, value);
         }
+    }
 
+    /**
+     * 不使用LinkedHashMap，自实现
+     */
+    static class LRUCache2 {
+
+        class LRUNode {
+            int key;
+            int val;
+            LRUNode pre, next;
+
+            public LRUNode() {
+            }
+
+            public LRUNode(int key, int val) {
+                this.key = key;
+                this.val = val;
+            }
+        }
+
+        int capacity;
+        HashMap<Integer, LRUNode> map;
+        LRUNode head, tail;
+
+
+        public LRUCache2(int capacity) {
+            this.capacity = capacity;
+            map = new LinkedHashMap<>(capacity);
+            head = new LRUNode();
+            tail = new LRUNode();
+            head.next = tail;
+            tail.pre = head;
+        }
+
+        public int get(int key) {
+            if (map.containsKey(key)) {
+                LRUNode node = map.get(key);
+                moveToHead(node);
+                return node.val;
+            }
+            return -1;
+        }
+
+        public void put(int key, int value) {
+            LRUNode node;
+            if (map.containsKey(key)) {
+                node = map.get(key);
+                node.val = value;
+            } else {
+                node = new LRUNode(key, value);
+                if (map.size() == capacity) {
+                    removeLast();
+                }
+                map.put(key, node);
+            }
+            moveToHead(node);
+        }
+
+        private void moveToHead(LRUNode node) {
+            if (node.pre != null) {
+                node.pre.next = node.next;
+                node.next.pre = node.pre;
+            }
+            node.next = head.next;
+            head.next.pre = node;
+            head.next = node;
+            node.pre = head;
+        }
+
+        private void removeLast() {
+            LRUNode last = tail.pre;
+            if (last != head) {
+                last.pre.next = tail;
+                tail.pre = last.pre;
+                map.remove(last.key);
+            }
+        }
     }
 
 }
