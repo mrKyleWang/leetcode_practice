@@ -3,8 +3,6 @@ package array;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 
 /**
  * 31. 下一个排列
@@ -55,38 +53,33 @@ public class NextPermutation {
      */
     public void nextPermutation(int[] nums) {
         int n = nums.length;
-        int start = -1;
-        int right = Integer.MIN_VALUE;
-        PriorityQueue<Integer> queue = new PriorityQueue<>(Comparator.comparingInt(o -> nums[o]));
-        for (int i = n - 1; i >= 0; i--) {
-            if (nums[i] < right) {
-                start = i;
+        int reverseStart = 0;
+        for (int i = n - 1; i > 0; i--) {
+            if (nums[i] > nums[i - 1]) {
+                reverseStart = i;
+                for (int j = n - 1; j >= i; j--) {
+                    if (nums[j] > nums[i - 1]) {
+                        swap(nums, i - 1, j);
+                        break;
+                    }
+                }
                 break;
             }
-            right = nums[i];
-            queue.add(i);
         }
-        if (start == -1) {
-            for (int i = 0; i < n / 2; i++) {
-                swap(nums, i, n - 1 - i);
-            }
-        } else {
-            int swapPoint = -1;
-            while (!queue.isEmpty()) {
-                Integer poll = queue.poll();
-                if (nums[poll] > nums[start]) {
-                    swapPoint = poll;
-                    break;
-                }
-            }
-            swap(nums, start, swapPoint);
-            Arrays.sort(nums, start + 1, n);
-        }
+        reverse(nums, reverseStart, n - 1);
     }
 
     private void swap(int[] nums, int i, int j) {
         int temp = nums[j];
         nums[j] = nums[i];
         nums[i] = temp;
+    }
+
+    private void reverse(int[] nums, int l, int r) {
+        while (l < r) {
+            swap(nums, l, r);
+            l++;
+            r--;
+        }
     }
 }
