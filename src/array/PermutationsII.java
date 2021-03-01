@@ -44,31 +44,29 @@ public class PermutationsII {
     public List<List<Integer>> permuteUnique(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
-        Deque<Integer> retain = new LinkedList<>();
+        Queue<Integer> option = new LinkedList<>();
         for (int num : nums) {
-            retain.add(num);
+            option.offer(num);
         }
-        add(result, new ArrayList<>(), retain, nums.length);
+        add(result, new ArrayList<>(), option);
         return result;
     }
 
-    private void add(List<List<Integer>> result, List<Integer> path, Deque<Integer> retain, int cur) {
-        if (cur == 0) {
-            result.add(path);
+    private void add(List<List<Integer>> result, List<Integer> path, Queue<Integer> option) {
+        if (option.size() == 0) {
+            result.add(new ArrayList<>(path));
             return;
         }
-        int size = retain.size();
         HashSet<Integer> set = new HashSet<>();
-        for (int i = 0; i < size; i++) {
-            Integer next = retain.getFirst();
-            Integer remove = retain.removeFirst();
-            if (!set.contains(next)) {
-                List<Integer> newPath = new ArrayList<>(path);
-                newPath.add(next);
-                add(result, newPath, retain, cur - 1);
-                set.add(next);
+        for (int i = 0; i < option.size(); i++) {
+            Integer num = option.poll();
+            if (!set.contains(num)) {
+                path.add(num);
+                add(result, path, option);
+                set.add(num);
+                path.remove(path.size() - 1);
             }
-            retain.addLast(remove);
+            option.offer(num);
         }
     }
 }
