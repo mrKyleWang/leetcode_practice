@@ -1,7 +1,10 @@
 package string;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
- * 整数反转（7）
+ * 7. 整数反转
  * @author KyleWang
  * @version 1.0
  * @date 2019年04月25日
@@ -9,40 +12,30 @@ package string;
 public class ReverseInteger {
 
 	/*
-	 * 给出一个 32 位的有符号整数，你需要将这个整数中每位上的数字进行反转。
+	   给你一个 32 位的有符号整数 x ，返回 x 中每位上的数字反转后的结果。
+		如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0。
+		假设环境不允许存储 64 位整数（有符号或无符号）。
 	 */
 
-	public static void main(String[] args) {
-		System.out.println(reverse(-1230));
-	}
+    @Test
+    public void test() {
+        Assert.assertEquals(321, reverse(123));
+        Assert.assertEquals(-321, reverse(-123));
+        Assert.assertEquals(21, reverse(120));
+        Assert.assertEquals(0, reverse(0));
+        Assert.assertEquals(0, reverse(1534236469));
+    }
 
-	public static int reverse(int x) {
-		char[] chars = String.valueOf(x).toCharArray();
-		StringBuilder sb = new StringBuilder();
-		if (x < 0) {
-			sb.append('-');
-		}
-		boolean skipZero = true;
-		for (int i = chars.length - 1; i >= 0; i--) {
-			char c = chars[i];
-			if (c == '-') {
-				continue;
-			}
-			if (c == '0') {
-				if (!skipZero) {
-					sb.append(c);
-				}
-			} else {
-				skipZero = false;
-				sb.append(c);
-			}
-		}
-		int i = 0;
-		try {
-			i = Integer.parseInt(sb.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return i;
-	}
+    public int reverse(int x) {
+        int res = 0;
+        while (x != 0) {
+            int newRes = res * 10 + (x % 10);
+            if ((newRes - (x % 10)) / 10 != res) {
+                return 0;
+            }
+            res = newRes;
+            x /= 10;
+        }
+        return res;
+    }
 }
