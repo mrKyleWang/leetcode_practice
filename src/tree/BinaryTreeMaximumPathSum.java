@@ -37,7 +37,7 @@ public class BinaryTreeMaximumPathSum {
 
         输出: 42
 
-[5,4,8,11,null,13,4,7,2,null,null,null,1]   48
+        [5,4,8,11,null,13,4,7,2,null,null,null,1]   48
 
             5
            / \
@@ -51,91 +51,45 @@ public class BinaryTreeMaximumPathSum {
 
     @Test
     public void test() {
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-        int pathSum = maxPathSum(root);
-        Assert.assertEquals(6, pathSum);
+        Assert.assertEquals(6, maxPathSum(TreeNode.deserialize("1,2,3")));
     }
 
     @Test
     public void test2() {
-        TreeNode root = new TreeNode(-10);
-        root.left = new TreeNode(9);
-        root.right = new TreeNode(20);
-        root.right.left = new TreeNode(15);
-        root.right.right = new TreeNode(7);
-        int pathSum = maxPathSum(root);
-        Assert.assertEquals(42, pathSum);
-    }
-
-    @Test
-    public void test3() {
-        TreeNode root = new TreeNode(-10);
-        int pathSum = maxPathSum(root);
-        Assert.assertEquals(-10, pathSum);
-    }
-
-    @Test
-    public void test4() {
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(-2);
-        root.right = new TreeNode(3);
-        int pathSum = maxPathSum(root);
-        Assert.assertEquals(4, pathSum);
+        Assert.assertEquals(42, maxPathSum(TreeNode.deserialize("-10,9,20,null,null,15,7")));
     }
 
     @Test
     public void test5() {
-        TreeNode root = new TreeNode(5);
-        root.left = new TreeNode(4);
-        root.right = new TreeNode(8);
-        root.left.left = new TreeNode(11);
-        root.right.left = new TreeNode(13);
-        root.right.right = new TreeNode(4);
-        root.left.left.left = new TreeNode(7);
-        root.left.left.right = new TreeNode(2);
-        root.right.right.right = new TreeNode(1);
-        int pathSum = maxPathSum(root);
-        Assert.assertEquals(48, pathSum);
+        Assert.assertEquals(48, maxPathSum(TreeNode.deserialize("5,4,8,11,null,13,4,7,2,null,null,null,1")));
     }
 
 
     public int maxPathSum(TreeNode root) {
         findMaxPathSum(root);
-        return maxPathSum;
+        return res;
     }
 
-    int maxPathSum = Integer.MIN_VALUE;
+    int res = Integer.MIN_VALUE;
 
     /**
-     * 如果想从当前节点返回上一层节点，要么从左子节点经过，要么从右子节点经过，或者不经过子节点
-     * @param node
-     * @return
+     * 用于计算 包含当前node节点时，并可继续向上连接的最大路径和
+     * 总共有4种路径情况：
+     *     1. node
+     *     2. node ~ node.left
+     *     3. node ~ node.right
+     *     4. node.left ~ node ~ node.right （只参与res的计算，不能提供给上层父节点连接）
      */
     private int findMaxPathSum(TreeNode node) {
-        int tempMax = node.val;
-        int tempSum = node.val;
-        if (node.left != null) {
-            int leftMaxSum = findMaxPathSum(node.left);
-            tempSum += leftMaxSum;
-            tempMax = max(tempMax, node.val + leftMaxSum);
+        if (node == null) {
+            return 0;
         }
-        if (node.right != null) {
-            int rightMaxSum = findMaxPathSum(node.right);
-            tempSum += rightMaxSum;
-            tempMax = max(tempMax, node.val + rightMaxSum);
-        }
-        maxPathSum = max(maxPathSum, tempMax, tempSum);
-        return tempMax;
+        int leftMax = findMaxPathSum(node.left);
+        int rightMax = findMaxPathSum(node.right);
+        int curMaxPath = Math.max(node.val, Math.max(leftMax, rightMax) + node.val);
+        res = Math.max(res, Math.max(curMaxPath, leftMax + rightMax + node.val));
+        return curMaxPath;
     }
 
-    private int max(int... nums) {
-        int max = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            max = Math.max(nums[i], max);
-        }
-        return max;
-    }
 
 }
