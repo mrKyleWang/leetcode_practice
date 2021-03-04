@@ -78,7 +78,7 @@ public class Candy {
     }
 
     /**
-     * 维持一个递减序列
+     * 分别从左、从右遍历，根据前一个位置的数量判断当前最小所需的糖果数，最后取left[i]、right[i]的最大值
      */
     public int candy(int[] ratings) {
         int n = ratings.length;
