@@ -35,19 +35,23 @@ public class LengthOfLongestSubstring {
     @Test
     public void test() {
         Assert.assertEquals(3, lengthOfLongestSubstring("abcabcbb"));
+        Assert.assertEquals(3, lengthOfLongestSubstring2("abcabcbb"));
     }
 
     @Test
     public void test2() {
         Assert.assertEquals(3, lengthOfLongestSubstring("pwwkew"));
+        Assert.assertEquals(3, lengthOfLongestSubstring2("pwwkew"));
     }
 
     @Test
     public void test3() {
         Assert.assertEquals(5, lengthOfLongestSubstring("tmmzuxt"));
+        Assert.assertEquals(5, lengthOfLongestSubstring2("tmmzuxt"));
     }
 
     /**
+     * 方法1：滑动窗口
      * 使用map保存字符对应的位置（最后出现的位置）
      * 当l~i不包含重复字符时，计算长度，而如果map中有，则将l右移至重复字符的后一位，此时l左侧的索引都可以作为无效（在containsKey时用于判断）
      */
@@ -64,6 +68,27 @@ public class LengthOfLongestSubstring {
                 l = map.get(c) + 1;
             }
             map.put(c, i);
+        }
+        return max;
+    }
+
+    /**
+     * 方法2：动态规划
+     * 在i位置时，当前字符为c
+     * map保存i位置之前每个字符出现的最后的位置，dp[i]表示以i结尾的最长无重复子串
+     * 转移方程为：dp[i] = Math.min(dp[i-1]+1,i-map.get(c))
+     * 由于只需要用到dp[i-1]，因此只需要用一个pre即可保存此值
+     */
+    public int lengthOfLongestSubstring2(String s) {
+        int max = 1;
+        char[] chars = s.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+        int pre = 0;
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            pre = Math.min(pre + 1, i - map.getOrDefault(c, -1));
+            map.put(c, i);
+            max = Math.max(max, pre);
         }
         return max;
     }
