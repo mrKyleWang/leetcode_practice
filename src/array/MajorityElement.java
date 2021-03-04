@@ -1,5 +1,8 @@
 package array;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -24,13 +27,18 @@ public class MajorityElement {
         输出: 2
      */
 
-    public static void main(String[] args) {
+    @Test
+    public void test() {
         int[] nums = {2, 2, 1, 1, 1, 2, 2};
-        System.out.println(majorityElement(nums));
-        System.out.println(majorityElement2(nums));
+        Assert.assertEquals(2, majorityElement(nums));
+        Assert.assertEquals(2, majorityElement2(nums));
+        Assert.assertEquals(2, majorityElement3(nums));
     }
 
-    public static int majorityElement(int[] nums) {
+    /**
+     * 方法1：map，时间O(n) 空间O(n)
+     */
+    public int majorityElement(int[] nums) {
         HashMap<Integer, Integer> map = new HashMap<>(nums.length);
         double threshold = ((double) nums.length / 2);
         for (int num : nums) {
@@ -47,7 +55,10 @@ public class MajorityElement {
         return nums[0];
     }
 
-    public static int majorityElement2(int[] nums) {
+    /**
+     * 方法2：排序，时间O(nlogn) 空间O(1)
+     */
+    public int majorityElement2(int[] nums) {
         Arrays.sort(nums);
         int length = nums.length;
         for (int i = 0; i < length; i++) {
@@ -57,4 +68,35 @@ public class MajorityElement {
         }
         return nums[0];
     }
+
+
+    /**
+     * 方法3：
+     * 每次消除两个不同的数，最后剩下的数是唯一可能为众数的数
+     */
+    public int majorityElement3(int[] nums) {
+        // 第一次遍历，找出两两消除后剩下的数
+        int candidate = 0;
+        int hp = 0;
+        for (int num : nums) {
+            if (hp == 0) {
+                candidate = num;
+                hp = 1;
+            } else if (num == candidate) {
+                hp++;
+            } else {
+                hp--;
+            }
+        }
+
+        // 第二次遍历，验证这个数
+        int count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            }
+        }
+        return count > nums.length / 2 ? candidate : -1;
+    }
+
 }
