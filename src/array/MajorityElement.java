@@ -71,7 +71,7 @@ public class MajorityElement {
 
 
     /**
-     * 方法3：
+     * 方法3：（摩尔投票法）
      * 每次消除两个不同的数，最后剩下的数是唯一可能为众数的数
      */
     public int majorityElement3(int[] nums) {
