@@ -40,36 +40,30 @@ public class BinaryTreeZigzagLevelOrderTraversal {
     }
 
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
-        List<List<Integer>> result = new ArrayList<>();
-        LinkedList<TreeNode> left = new LinkedList<>();
-        LinkedList<TreeNode> right = new LinkedList<>();
-        left.add(root);
-        while (!left.isEmpty()) {
-            List<Integer> list = new ArrayList<>();
-            while (!left.isEmpty()) {
-                TreeNode node = left.pollLast();
-                if (node != null) {
-                    list.add(node.val);
-                    right.add(node.left);
-                    right.add(node.right);
+        boolean left = true;
+        List<List<Integer>> res = new ArrayList<>();
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            LinkedList<Integer> list = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (left) {
+                    list.offerLast(node.val);
+                } else {
+                    list.offerFirst(node.val);
+                }
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
                 }
             }
-            if (!list.isEmpty()) {
-                result.add(list);
-            }
-            list = new ArrayList<>();
-            while (!right.isEmpty()) {
-                TreeNode node = right.pollLast();
-                if (node != null) {
-                    list.add(node.val);
-                    left.add(node.right);
-                    left.add(node.left);
-                }
-            }
-            if (!list.isEmpty()) {
-                result.add(list);
-            }
+            res.add(list);
+            left = !left;
         }
-        return result;
+        return res;
     }
 }
