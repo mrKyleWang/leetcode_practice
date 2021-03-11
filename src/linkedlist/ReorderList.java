@@ -44,31 +44,28 @@ public class ReorderList {
      */
     public void reorderList(ListNode head) {
         if (head != null) {
-            ListNode quick = head;
-            ListNode mid = head;
+            ListNode slow = head, quick = head.next;
             int n = 0;
-            while (quick.next != null && quick.next.next != null) {
+            while (quick != null && quick.next != null) {
+                slow = slow.next;
                 quick = quick.next.next;
-                mid = mid.next;
                 n++;
             }
-            ListNode[] temp = new ListNode[n];
-            ListNode tail = quick.next == null ? mid : mid.next;
-            mid = tail.next;
+            n += quick != null ? 1 : 0;
+            ListNode mid = slow.next;
+            ListNode[] arr = new ListNode[n];
             for (int i = 0; i < n; i++) {
-                temp[i] = mid;
+                arr[i] = mid;
                 mid = mid.next;
             }
+            ListNode cur = head;
             for (int i = n - 1; i >= 0; i--) {
-                ListNode node = temp[i];
-                ListNode nextHead = head.next;
-                head.next = node;
-                node.next = nextHead;
-                head = nextHead;
+                ListNode next = cur.next;
+                cur.next = arr[i];
+                cur.next.next = next;
+                cur = next;
             }
-            if (n > 0) {
-                tail.next = null;
-            }
+            cur.next = null;
         }
     }
 }
