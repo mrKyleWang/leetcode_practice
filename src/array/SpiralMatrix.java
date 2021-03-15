@@ -43,33 +43,28 @@ public class SpiralMatrix {
     }
 
     public List<Integer> spiralOrder(int[][] matrix) {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
         int m = matrix.length;
         if (m > 0) {
             int n = matrix[0].length;
-            int[][] visited = new int[m][n];
-            int[][] directions = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-            int i = 0;
-            int j = 0;
-            int direction = 0;
-            while (list.size() < m * n) {
-                list.add(matrix[i][j]);
-                visited[i][j] = 1;
-                System.out.println(matrix[i][j]);
-
-                int newI = i + directions[direction][0];
-                int newJ = j + directions[direction][1];
-                if (newI < 0 || newI >= m || newJ < 0 || newJ >= n || visited[newI][newJ] == 1) {
-                    direction = direction == directions.length - 1 ? 0 : direction + 1;
-                    i += directions[direction][0];
-                    j += directions[direction][1];
+            boolean[][] visited = new boolean[m][n];
+            int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+            int index = 0;
+            int i = 0, j = 0;
+            while (res.size() < m * n) {
+                if (i >= 0 && i < m && j >= 0 && j < n && !visited[i][j]) {
+                    res.add(matrix[i][j]);
+                    visited[i][j] = true;
                 } else {
-                    i = newI;
-                    j = newJ;
+                    i = i - directions[index % 4][0];
+                    j = j - directions[index % 4][1];
+                    index++;
                 }
+                i = i + directions[index % 4][0];
+                j = j + directions[index % 4][1];
             }
         }
-        return list;
+        return res;
     }
 
 }
