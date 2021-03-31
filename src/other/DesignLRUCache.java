@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
  * @version 1.0
  * @date 2020年05月25日
  */
-public class DesineLRUCache {
+public class DesignLRUCache {
 
     /*
 
