@@ -52,7 +52,7 @@ public class SubsetsII {
         // 不选当前数字
         dfs(res, path, nums, index + 1, false);
 
-        // 选择当前数字
+        // 选择当前数字，这里的判断是为了去重，当前一个没有选，而当前数字与前一个相同，那就不继续递归，例如：12_ 会保存至结果，而1_2不保存
         if (choosePre || index == 0 || nums[index] != nums[index - 1]) {
             path.add(nums[index]);
             dfs(res, path, nums, index + 1, true);
